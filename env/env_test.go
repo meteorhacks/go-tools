@@ -14,15 +14,18 @@ func TestS(t *testing.T) {
 	if err == nil {
 		t.Error("should return error")
 	} else if val != "" {
-		t.Error("should return empty string")
+		t.Error("should return empty value")
 	}
 
-	os.Setenv(key, "val")
+	var req string = "str"
+	var res string = "str"
+
+	os.Setenv(key, req)
 	val, err = S(key)
 	if err != nil {
 		t.Error("should not return error")
-	} else if val != "val" {
-		t.Error("should return correct string")
+	} else if val != res {
+		t.Error("should return correct value")
 	}
 }
 
