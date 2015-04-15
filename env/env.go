@@ -7,8 +7,7 @@ import (
 )
 
 const (
-	NO_ERR = ""
-	FORMAT = "env: invalid %s (%s) - %s"
+	errfmt = "env: invalid %s (%s) - %s"
 )
 
 func Check(c map[string]string) (err error) {
@@ -21,7 +20,7 @@ func S(k string) (v string, err error) {
 
 	if v == "" {
 		m := "value not set or empty"
-		err = errors.New(fmt.Sprintf(FORMAT, k, v, m))
+		err = errors.New(fmt.Sprintf(errfmt, k, v, m))
 		return "", err
 	}
 
