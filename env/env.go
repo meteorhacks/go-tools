@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 )
 
 const (
-	errfmt = "env: invalid %s (%s) - %s"
+	errfmt  = "env: invalid %s (%s) - %s"
+	boolrgx = "1|true|True|TRUE"
 )
 
 func Check(c map[string]string) (err error) {
@@ -28,8 +30,13 @@ func S(k string) (v string, err error) {
 }
 
 func B(k string) (v bool, err error) {
-	// TODO
-	return v, nil
+	s, err := S(k)
+
+	if err != nil {
+		return false, err
+	}
+
+	return regexp.MatchString(boolrgx, s)
 }
 
 func I(k string) (v int, err error) {
