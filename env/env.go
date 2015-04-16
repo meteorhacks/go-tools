@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 )
 
 const (
@@ -31,7 +32,6 @@ func S(k string) (v string, err error) {
 
 func B(k string) (v bool, err error) {
 	s, err := S(k)
-
 	if err != nil {
 		return false, err
 	}
@@ -40,28 +40,65 @@ func B(k string) (v bool, err error) {
 }
 
 func I(k string) (v int, err error) {
-	// TODO
-	return v, nil
+	s, err := S(k)
+	if err != nil {
+		return 0, err
+	}
+
+	i, err := strconv.ParseInt(s, 10, 0)
+	if err != nil {
+		return 0, err
+	}
+
+	return int(i), nil
 }
 
 func I32(k string) (v int32, err error) {
-	// TODO
-	return v, nil
+	s, err := S(k)
+	if err != nil {
+		return 0, err
+	}
+
+	i, err := strconv.ParseInt(s, 10, 32)
+	if err != nil {
+		return 0, err
+	}
+
+	return int32(i), nil
 }
 
 func I64(k string) (v int64, err error) {
-	// TODO
-	return v, nil
+	s, err := S(k)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return strconv.ParseInt(s, 10, 64)
 }
 
 func F32(k string) (v float32, err error) {
-	// TODO
-	return v, nil
+	s, err := S(k)
+	if err != nil {
+		return 0, err
+	}
+
+	f, err := strconv.ParseFloat(s, 32)
+	if err != nil {
+		return 0, err
+	}
+
+	return float32(f), nil
 }
 
 func F64(k string) (v float64, err error) {
-	// TODO
-	return v, nil
+	s, err := S(k)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return strconv.ParseFloat(s, 64)
 }
 
 func SS(k string, d string) (v []string, err error) {
