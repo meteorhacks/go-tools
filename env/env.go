@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -102,7 +103,12 @@ func F64(k string) (v float64, err error) {
 }
 
 func SS(k string, d string) (v []string, err error) {
-	// TODO
+	s, err := S(k)
+	if err != nil {
+		return nil, err
+	}
+
+	v = strings.Split(s, d)
 	return v, nil
 }
 
