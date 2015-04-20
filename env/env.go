@@ -11,7 +11,7 @@ import (
 
 const (
 	errfmt  = "env: invalid %s (%s) - %s"
-	boolrgx = "1|true|True|TRUE"
+	boolrgx = "true|True|TRUE"
 )
 
 func Check(c map[string]string) (err error) {
