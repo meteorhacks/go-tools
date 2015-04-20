@@ -207,6 +207,145 @@ func TestSS(t *testing.T) {
 	}
 }
 
+func TestSB(t *testing.T) {
+	key := randstr()
+	sep := ","
+
+	val, err := SB(key, sep)
+	if err == nil {
+		t.Error("should return error")
+	} else if val != nil {
+		t.Error("should return empty value")
+	}
+
+	req := "true,True,TRUE,something-else"
+	res := []bool{true, true, true, false}
+
+	os.Setenv(key, req)
+	val, err = SB(key, sep)
+	if err != nil {
+		t.Error("should not return error")
+	} else if !reflect.DeepEqual(val, res) {
+		fmt.Println(val, res)
+		t.Error("should return correct value")
+	}
+}
+
+func TestSI(t *testing.T) {
+	key := randstr()
+	sep := ","
+
+	val, err := SI(key, sep)
+	if err == nil {
+		t.Error("should return error")
+	} else if val != nil {
+		t.Error("should return empty value")
+	}
+
+	req := "1,2,3"
+	res := []int{1, 2, 3}
+
+	os.Setenv(key, req)
+	val, err = SI(key, sep)
+	if err != nil {
+		t.Error("should not return error")
+	} else if !reflect.DeepEqual(val, res) {
+		t.Error("should return correct value")
+	}
+}
+
+func TestSI32(t *testing.T) {
+	key := randstr()
+	sep := ","
+
+	val, err := SI32(key, sep)
+	if err == nil {
+		t.Error("should return error")
+	} else if val != nil {
+		t.Error("should return empty value")
+	}
+
+	req := "1,2,3"
+	res := []int32{1, 2, 3}
+
+	os.Setenv(key, req)
+	val, err = SI32(key, sep)
+	if err != nil {
+		t.Error("should not return error")
+	} else if !reflect.DeepEqual(val, res) {
+		t.Error("should return correct value")
+	}
+}
+
+func TestSI64(t *testing.T) {
+	key := randstr()
+	sep := ","
+
+	val, err := SI64(key, sep)
+	if err == nil {
+		t.Error("should return error")
+	} else if val != nil {
+		t.Error("should return empty value")
+	}
+
+	req := "1,2,3"
+	res := []int64{1, 2, 3}
+
+	os.Setenv(key, req)
+	val, err = SI64(key, sep)
+	if err != nil {
+		t.Error("should not return error")
+	} else if !reflect.DeepEqual(val, res) {
+		t.Error("should return correct value")
+	}
+}
+
+func TestSF32(t *testing.T) {
+	key := randstr()
+	sep := ","
+
+	val, err := SF32(key, sep)
+	if err == nil {
+		t.Error("should return error")
+	} else if val != nil {
+		t.Error("should return empty value")
+	}
+
+	req := "1.2,2.3,3.45"
+	res := []float32{1.2, 2.3, 3.45}
+
+	os.Setenv(key, req)
+	val, err = SF32(key, sep)
+	if err != nil {
+		t.Error("should not return error")
+	} else if !reflect.DeepEqual(val, res) {
+		t.Error("should return correct value")
+	}
+}
+
+func TestSF64(t *testing.T) {
+	key := randstr()
+	sep := ","
+
+	val, err := SF64(key, sep)
+	if err == nil {
+		t.Error("should return error")
+	} else if val != nil {
+		t.Error("should return empty value")
+	}
+
+	req := "1.2,2.3,3.45"
+	res := []float64{1.2, 2.3, 3.45}
+
+	os.Setenv(key, req)
+	val, err = SF64(key, sep)
+	if err != nil {
+		t.Error("should not return error")
+	} else if !reflect.DeepEqual(val, res) {
+		t.Error("should return correct value")
+	}
+}
+
 func randstr() string {
 	n := rand.Int()
 	return fmt.Sprintf("K%d", n)

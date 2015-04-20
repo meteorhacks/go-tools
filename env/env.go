@@ -113,31 +113,127 @@ func SS(k string, d string) (v []string, err error) {
 }
 
 func SB(k string, d string) (v []bool, err error) {
-	// TODO
+	s, err := SS(k, d)
+	if err != nil {
+		return nil, err
+	}
+
+	l := len(s)
+	v = make([]bool, l)
+
+	for i := 0; i < l; i++ {
+		b, err := regexp.MatchString(boolrgx, s[i])
+		if err != nil {
+			return nil, err
+		}
+
+		v[i] = b
+	}
+
 	return v, nil
 }
 
 func SI(k string, d string) (v []int, err error) {
-	// TODO
+	s, err := SS(k, d)
+	if err != nil {
+		return nil, err
+	}
+
+	l := len(s)
+	v = make([]int, l)
+
+	for i := 0; i < l; i++ {
+		n, err := strconv.ParseInt(s[i], 10, 0)
+		if err != nil {
+			return nil, err
+		}
+
+		v[i] = int(n)
+	}
+
 	return v, nil
 }
 
 func SI32(k string, d string) (v []int32, err error) {
-	// TODO
+	s, err := SS(k, d)
+	if err != nil {
+		return nil, err
+	}
+
+	l := len(s)
+	v = make([]int32, l)
+
+	for i := 0; i < l; i++ {
+		n, err := strconv.ParseInt(s[i], 10, 0)
+		if err != nil {
+			return nil, err
+		}
+
+		v[i] = int32(n)
+	}
+
 	return v, nil
 }
 
 func SI64(k string, d string) (v []int64, err error) {
-	// TODO
+	s, err := SS(k, d)
+	if err != nil {
+		return nil, err
+	}
+
+	l := len(s)
+	v = make([]int64, l)
+
+	for i := 0; i < l; i++ {
+		n, err := strconv.ParseInt(s[i], 10, 0)
+		if err != nil {
+			return nil, err
+		}
+
+		v[i] = n
+	}
+
 	return v, nil
 }
 
 func SF32(k string, d string) (v []float32, err error) {
-	// TODO
+	s, err := SS(k, d)
+	if err != nil {
+		return nil, err
+	}
+
+	l := len(s)
+	v = make([]float32, l)
+
+	for i := 0; i < l; i++ {
+		n, err := strconv.ParseFloat(s[i], 64)
+		if err != nil {
+			return nil, err
+		}
+
+		v[i] = float32(n)
+	}
+
 	return v, nil
 }
 
 func SF64(k string, d string) (v []float64, err error) {
-	// TODO
+	s, err := SS(k, d)
+	if err != nil {
+		return nil, err
+	}
+
+	l := len(s)
+	v = make([]float64, l)
+
+	for i := 0; i < l; i++ {
+		n, err := strconv.ParseFloat(s[i], 64)
+		if err != nil {
+			return nil, err
+		}
+
+		v[i] = n
+	}
+
 	return v, nil
 }
