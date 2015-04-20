@@ -10,12 +10,43 @@ import (
 )
 
 const (
-	errfmt  = "env: invalid %s (%s) - %s"
-	boolrgx = "true|True|TRUE"
+	errInvalidVar  = "env: %s is not set or empty"
+	errInvalidVars = "env: found invalid environment variables"
+	boolIsTrueRgx  = "true|True|TRUE"
 )
 
 func Check(c map[string]string) (err error) {
-	// TODO
+	errd := false
+	msg := errInvalidVars
+
+	for k, t := range c {
+		switch t {
+		case "string":
+			_, err = S(k)
+		case "bool":
+			_, err = B(k)
+		case "int":
+			_, err = I(k)
+		case "int32":
+			_, err = I32(k)
+		case "int64":
+			_, err = I64(k)
+		case "float32":
+			_, err = F32(k)
+		case "float64":
+			_, err = F64(k)
+		}
+
+		if err != nil {
+			errd = true
+			msg = msg + "\n  * " + err.Error()
+		}
+	}
+
+	if errd {
+		return errors.New(msg)
+	}
+
 	return nil
 }
 
@@ -23,8 +54,7 @@ func S(k string) (v string, err error) {
 	v = os.Getenv(k)
 
 	if v == "" {
-		m := "value not set or empty"
-		err = errors.New(fmt.Sprintf(errfmt, k, v, m))
+		err = errors.New(fmt.Sprintf(errInvalidVar, k))
 		return "", err
 	}
 
@@ -37,7 +67,7 @@ func B(k string) (v bool, err error) {
 		return false, err
 	}
 
-	return regexp.MatchString(boolrgx, s)
+	return regexp.MatchString(boolIsTrueRgx, s)
 }
 
 func I(k string) (v int, err error) {
@@ -122,7 +152,7 @@ func SB(k string, d string) (v []bool, err error) {
 	v = make([]bool, l)
 
 	for i := 0; i < l; i++ {
-		b, err := regexp.MatchString(boolrgx, s[i])
+		b, err := regexp.MatchString(boolIsTrueRgx, s[i])
 		if err != nil {
 			return nil, err
 		}

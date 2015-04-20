@@ -8,6 +8,43 @@ import (
 	"testing"
 )
 
+func TestCheck(t *testing.T) {
+	type r struct {
+		k string
+		v string
+		t string
+	}
+
+	vals := []r{
+		r{randstr(), "str", "string"},
+		r{randstr(), "true", "bool"},
+		r{randstr(), "123", "int"},
+		r{randstr(), "123", "int32"},
+		r{randstr(), "123", "int64"},
+		r{randstr(), "1.23", "float32"},
+		r{randstr(), "1.23", "float64"},
+	}
+
+	req := make(map[string]string)
+	for _, v := range vals {
+		req[v.k] = v.t
+	}
+
+	err := Check(req)
+	if err == nil {
+		t.Error("should return error")
+	}
+
+	for _, v := range vals {
+		os.Setenv(v.k, v.v)
+	}
+
+	err = Check(req)
+	if err != nil {
+		t.Error("should not return error")
+	}
+}
+
 func TestS(t *testing.T) {
 	key := randstr()
 
