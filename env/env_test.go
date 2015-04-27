@@ -8,40 +8,67 @@ import (
 	"testing"
 )
 
-func TestCheck(t *testing.T) {
-	type r struct {
-		k string
-		v string
-		t string
+func TestGet(t *testing.T) {
+	type Spec struct {
+		ENV_S    string
+		ENV_B    bool
+		ENV_I    int
+		ENV_I32  int32
+		ENV_I64  int64
+		ENV_F32  float32
+		ENV_F64  float64
+		ENV_SS   []string
+		ENV_SB   []bool
+		ENV_SI   []int
+		ENV_SI32 []int32
+		ENV_SI64 []int64
+		ENV_SF32 []float32
+		ENV_SF64 []float64
 	}
 
-	vals := []r{
-		r{randstr(), "str", "string"},
-		r{randstr(), "true", "bool"},
-		r{randstr(), "123", "int"},
-		r{randstr(), "123", "int32"},
-		r{randstr(), "123", "int64"},
-		r{randstr(), "1.23", "float32"},
-		r{randstr(), "1.23", "float64"},
-	}
+	spec := Spec{}
 
-	req := make(map[string]string)
-	for _, v := range vals {
-		req[v.k] = v.t
-	}
-
-	err := Check(req)
+	err := Get(&spec)
 	if err == nil {
 		t.Error("should return error")
 	}
 
-	for _, v := range vals {
-		os.Setenv(v.k, v.v)
+	expc := Spec{
+		ENV_S:    "str",
+		ENV_B:    true,
+		ENV_I:    1,
+		ENV_I32:  1,
+		ENV_I64:  1,
+		ENV_F32:  0.1,
+		ENV_F64:  0.1,
+		ENV_SS:   []string{"str"},
+		ENV_SB:   []bool{true},
+		ENV_SI:   []int{1},
+		ENV_SI32: []int32{1},
+		ENV_SI64: []int64{1},
+		ENV_SF32: []float32{0.1},
+		ENV_SF64: []float64{0.1},
 	}
 
-	err = Check(req)
-	if err != nil {
+	os.Setenv("ENV_S", "str")
+	os.Setenv("ENV_B", "true")
+	os.Setenv("ENV_I", "1")
+	os.Setenv("ENV_I32", "1")
+	os.Setenv("ENV_I64", "1")
+	os.Setenv("ENV_F32", "0.1")
+	os.Setenv("ENV_F64", "0.1")
+	os.Setenv("ENV_SS", "str")
+	os.Setenv("ENV_SB", "true")
+	os.Setenv("ENV_SI", "1")
+	os.Setenv("ENV_SI32", "1")
+	os.Setenv("ENV_SI64", "1")
+	os.Setenv("ENV_SF32", "0.1")
+	os.Setenv("ENV_SF64", "0.1")
+
+	if err = Get(&spec); err != nil {
 		t.Error("should not return error")
+	} else if !reflect.DeepEqual(spec, expc) {
+		t.Error("should return correct values")
 	}
 }
 

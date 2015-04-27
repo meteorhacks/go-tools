@@ -4,57 +4,123 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 const (
-	errInvalidVar  = "env: %s is not set or empty"
+	errEmptyVar    = "env: %s is not set or empty"
 	errInvalidVars = "env: found invalid environment variables"
 	boolIsTrueRgx  = "true|True|TRUE"
 )
 
-func Check(c map[string]string) (err error) {
-	errd := false
-	msg := errInvalidVars
+var (
+	Delimiter = ","
+)
 
-	for k, t := range c {
-		switch t {
-		case "string":
-			_, err = S(k)
-		case "bool":
-			_, err = B(k)
-		case "int":
-			_, err = I(k)
-		case "int32":
-			_, err = I32(k)
-		case "int64":
-			_, err = I64(k)
-		case "float32":
-			_, err = F32(k)
-		case "float64":
-			_, err = F64(k)
+func Get(spec interface{}) (err error) {
+	v := reflect.ValueOf(spec).Elem()
+	m := ""
+
+	v.FieldByNameFunc(func(name string) bool {
+		f := v.FieldByName(name)
+
+		switch f.Interface().(type) {
+		case string:
+			if val, err := S(name); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.SetString(val)
+			}
+
+		case bool:
+			if val, err := B(name); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.SetBool(val)
+			}
+
+		case int, int32, int64:
+			if val, err := I64(name); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.SetInt(val)
+			}
+
+		case float32, float64:
+			if val, err := F64(name); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.SetFloat(val)
+			}
+
+		case []string:
+			if val, err := SS(name, Delimiter); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.Set(reflect.ValueOf(val))
+			}
+
+		case []bool:
+			if val, err := SB(name, Delimiter); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.Set(reflect.ValueOf(val))
+			}
+
+		case []int:
+			if val, err := SI(name, Delimiter); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.Set(reflect.ValueOf(val))
+			}
+
+		case []int32:
+			if val, err := SI32(name, Delimiter); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.Set(reflect.ValueOf(val))
+			}
+
+		case []int64:
+			if val, err := SI64(name, Delimiter); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.Set(reflect.ValueOf(val))
+			}
+
+		case []float32:
+			if val, err := SF32(name, Delimiter); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.Set(reflect.ValueOf(val))
+			}
+
+		case []float64:
+			if val, err := SF64(name, Delimiter); err != nil {
+				m = m + "\n" + err.Error()
+			} else {
+				f.Set(reflect.ValueOf(val))
+			}
 		}
 
-		if err != nil {
-			errd = true
-			msg = msg + "\n  * " + err.Error()
-		}
-	}
+		return false
+	})
 
-	if errd {
-		return errors.New(msg)
+	if m == "" {
+		return nil
+	} else {
+		return errors.New(errInvalidVars + m)
 	}
-
-	return nil
 }
 
 func S(k string) (v string, err error) {
 	v = os.Getenv(k)
 
 	if v == "" {
-		err = errors.New(fmt.Sprintf(errInvalidVar, k))
+		err = errors.New(fmt.Sprintf(errEmptyVar, k))
 		return "", err
 	}
 
